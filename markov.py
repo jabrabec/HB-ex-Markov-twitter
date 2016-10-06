@@ -4,6 +4,14 @@ from random import choice
 import twitter
 
 
+api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+                      consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+                      access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+                      access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+# print api.VerifyCredentials()
+
+
 def open_and_read_file(filenames):
     """Given a list of files, open them, read the text, and return one long
         string."""
@@ -60,10 +68,13 @@ def make_text(chains):
 
 
 def tweet(chains):
-    # Use Python os.environ to get at environmental variables
-    # Note: you must run `source secrets.sh` before running this file
-    # to make sure these environmental variables are set.
-    pass
+    user_preference = ""
+    while user_preference != "q":
+        random_text = make_text(chains)
+        status = api.PostUpdate(random_text[:140])
+        print random_text[:140]
+        user_preference = raw_input("Enter to tweet again [q to quit] > ")
+    return
 
 # Get the filenames from the user through a command line prompt, ex:
 # python markov.py green-eggs.txt shakespeare.txt
@@ -75,5 +86,16 @@ text = open_and_read_file(filenames)
 # Get a Markov chain
 chains = make_chains(text)
 
+
+# # Produce random text
+# random_text = make_text(chains)
+
+
+tweet(chains)
+
+
 # Your task is to write a new function tweet, that will take chains as input
 # tweet(chains)
+
+# status = api.PostUpdate("testing 123")
+# print status
